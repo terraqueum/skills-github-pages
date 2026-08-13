@@ -1,0 +1,13 @@
+{
+    "name": "Terraqueum",
+    "description": "Made of carbon and mod.",
+    "iconName": "infinity",
+    "categories": [
+        "whatever"
+    ],
+    "filePatterns": [
+        "package.json$",
+        "^Dockerfile",
+        ".*\\.md$"
+    ]
+}
