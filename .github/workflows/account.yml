@@ -1,0 +1,40 @@
+name: Workflows with large secrets
+
+on: push
+env:
+  myNull: ${{ null }}
+  myBoolean: ${{ false }}
+  myIntegerNumber: ${{ 711 }}
+  myFloatNumber: ${{ -9.2 }}
+  myHexNumber: ${{ 0xff }}
+  myExponentialNumber: ${{ -2.99e-2 }}
+  myString: Mona the Octocat
+  myStringInBraces: ${{ 'It''s open source!' }}
+  
+jobs:
+  my-job:
+    name: My Job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Decrypt large secret
+        run: ./decrypt_secret.sh
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+      # This command is just an example to show your secret being printed
+      # Ensure you remove any print statements of your secrets. GitHub does
+      # not hide secrets that use this workaround.
+      - name: Test printing your secret (Remove this step in production)
+        run: cat $HOME/secrets/my_secret.json
+  decode-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Retrieve the secret and decode it to a file
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.CERTIFICATE_BASE64 }}
+        run: |
+          echo $CERTIFICATE_BASE64 | base64 --decode > cert.der
+      - name: Show certificate information
+        run: |
+          openssl x509 -in cert.der -inform DER -text -noout       
