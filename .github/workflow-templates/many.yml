@@ -1,0 +1,28 @@
+jobs:
+  job1:
+    env: &env_vars # Define the anchor on first use
+      NODE_ENV: production
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - run: echo "Using production settings"
+
+  job2:
+    env: *env_vars # Reuse the environment variables
+    steps:
+      - run: echo "Same environment $DATABASE_URL"
+      
+  test: &base_job # 
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      NODE_VERSION: '20'
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm test
+
+  alt-test: *base_job # Reuse the entire job configuration    
+      
